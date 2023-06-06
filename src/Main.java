@@ -39,6 +39,7 @@ public static void init(){
     Obat obat1 = new Obat();
     obat1.setId(3);
     obat1.setNamaObat("paramex");
+    obat1.setHarga(20000);
 
     apotek.obats.add(obat1);
 }
@@ -77,12 +78,37 @@ public static void kasir() {
     System.out.printf("%nSilahkan pilih menu berikut : %n");
     System.out.printf("\t1. Pembelian Obat %n");
     System.out.printf("\t2. Pembuatan Member Baru %n");
+    System.out.printf("pilih menu? %n");
+    int selected = chooseMenu(2);
+    switch(selected){
+        case 1 -> apotek.pembelianObat();
+        case 2 -> apotek.pembuatanMemberBaru();
+    }
+    
 }
 
 public static void manajemenObat() {
+    System.out.printf("%nSilahkan pilih menu berikut : %n");
+    System.out.printf("\t1. Edit Informasi Obat %n");
+    System.out.printf("\t2. Pemesanan Obat %n");
+    System.out.printf("pilih menu? %n");
+    int selected = chooseMenu(2);
+    switch(selected){
+        case 1 -> apotek.updateInformasiObat();
+        case 2 -> apotek.pemesananObat();
+    }
 }
 
 public static void laporan() {
+    System.out.printf("%nSilahkan pilih menu berikut : %n");
+    System.out.printf("\t1. Lihat Informasi Penjualan Obat %n");
+    System.out.printf("\t2. Lihat Informasi Pemesanan Obat %n");
+    System.out.printf("pilih menu? %n");
+    int selected = chooseMenu(2);
+    switch(selected){
+        case 1 -> apotek.showLaporanPenjualan();
+        case 2 -> apotek.showLaporanPemesanan();
+    }
 }
 
 public static void informasiObatDanMember() {
@@ -97,6 +123,7 @@ public static void informasiObatDanMember() {
 }
 
 public static void exit() {
+    System.exit(0);
 }
 
 }
