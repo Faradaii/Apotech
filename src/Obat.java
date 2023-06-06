@@ -11,6 +11,7 @@ public class Obat{
     private String untukPenyakit;
     private String productby;
     private int expiredYear;
+    private int harga;
 
     public int getId(){
         return id;
@@ -45,8 +46,14 @@ public class Obat{
     public int getExpiredYear(){
         return expiredYear;
     }
-    public void setProductby(int expiredYear){
+    public void setExpiredYear(int expiredYear){
         this.expiredYear = expiredYear;
+    }
+    public int getHarga(){
+        return harga;
+    }
+    public void setHarga(int harga){
+        this.harga = harga;
     }
 
 

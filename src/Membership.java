@@ -1,11 +1,12 @@
 public class Membership{
     public static int jumlahMembershipsKeseluruhan;
+    private int id;
 
     public Membership(){
         jumlahMembershipsKeseluruhan++;
+        id++;
     }
 
-    private int id;
     private String nama;
     private String alamat;
     private String jenisKelamin;
@@ -15,6 +16,7 @@ public class Membership{
     public int getId() {
         return id;
     }
+    //method berikut digunakan jika apotek sudah memiliki member. dan untuk mengetahui informasi tersebut diperlukan pembacaan databse.
     public void setId(int id){
         this.id = id;
     }
