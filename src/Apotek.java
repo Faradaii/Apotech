@@ -29,7 +29,7 @@ public void pembelianObat(){
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
 
   laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
-  System.out.printf("Apakah anda memiliki memberships ? y/n");
+  System.out.printf("Apakah anda memiliki memberships ? (y/n) : ");
   String answer = scan.nextLine();
 
   laporan.setPembeli("anonymous");
@@ -86,8 +86,9 @@ public void updateInformasiObat(){
   obat.setNamaObat(scan.nextLine());
   System.out.printf("kode : ");
   obat.setKodeObat(scan.nextLine());
-  System.out.printf("kegunaan : ");
-  obat.setUntukPenyakit(scan.nextLine());
+  System.out.printf("stok : ");
+  obat.setStockObat(scan.nextInt());
+  scan.nextLine(); // solusi sementara agar pengisian nama
   System.out.printf("productby : ");
   obat.setProductby(scan.nextLine());
   System.out.printf("expiredYear : ");
@@ -117,7 +118,7 @@ public void showInformasiObat(){
     System.out.printf("Total jenis obat yang dijual :%d%n", Obat.jumlahObatKeseluruhan);
     System.out.printf("%-4s| %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t", "id", "Nama Obat", "Kode Obat", "Untuk Penyakit", "Produksi Oleh", "Tahun Expired", "Harga Obat");
     for (Obat obat : this.obats) {
-        System.out.printf("%n%-4d| %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20d|\t %-20d|\t", obat.getId(), obat.getNamaObat(), obat.getKodeObat(),obat.getUntukPenyakit(),obat.getProductby(),obat.getExpiredYear(), obat.getHarga());
+        System.out.printf("%n%-4d| %-20s|\t %-20s|\t %-20d|\t %-20s|\t %-20d|\t %-20d|\t", obat.getId(), obat.getNamaObat(), obat.getKodeObat(),obat.getStockObat(),obat.getProductby(),obat.getExpiredYear(), obat.getHarga());
       }
 }
 

@@ -8,7 +8,7 @@ public class Obat{
     private int id;
     private String namaObat;
     private String kodeObat;
-    private String untukPenyakit;
+    private int stockObat;
     private String productby;
     private int expiredYear;
     private int harga;
@@ -31,11 +31,11 @@ public class Obat{
     public void setKodeObat(String kodeObat){
         this.kodeObat = kodeObat;
     }
-    public String getUntukPenyakit(){
-        return untukPenyakit;
+    public int getStockObat(){
+        return stockObat;
     }
-    public void setUntukPenyakit(String untukPenyakit){
-        this.untukPenyakit = untukPenyakit;
+    public void setStockObat(int stockObat){
+        this.stockObat = stockObat;
     }
     public String getProductby(){
         return productby;
