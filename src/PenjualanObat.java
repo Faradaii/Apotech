@@ -1,22 +1,14 @@
 import java.time.LocalDate;
 public class PenjualanObat extends Laporan {
 
-    public static int idLaporan;
+    private String pembeli;
+    private String jenisPembayaran;
 
     public PenjualanObat(){
         idLaporan++;
         this.setId();
         this.setDate();
     }
-
-    private String id;
-    private int idObat;
-    private LocalDate date;
-    private String pembeli;
-    private String namaObat;
-    private String jenisPembayaran;
-    private int totalItem;
-    private int totalHarga;
 
     public String getId() {
         return id;
@@ -65,12 +57,9 @@ public class PenjualanObat extends Laporan {
         return this.date;
     }
     public void setDate(){
-        this.date = generateDate();
+        this.date = super.generateDate();
     }
     
 
-    public LocalDate generateDate(){
-        LocalDate today = LocalDate.now();
-        return today;
-    }
+    
 }

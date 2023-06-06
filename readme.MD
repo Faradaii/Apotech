@@ -23,3 +23,5 @@ Penilaian:
 1. Penguasaan Konsep 4 Pilar OOP: 80%
 2. Penguasaan Keseluruhan Source Code: 20%
 
+## Detail
+- setiap penjualan 1 item obat apotek akan mendapatkan keuntungan 3% dari harga pembelian restock

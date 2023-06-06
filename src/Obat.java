@@ -3,6 +3,7 @@ public class Obat{
     
     public Obat(){
         jumlahObatKeseluruhan++;
+        this.setId(jumlahObatKeseluruhan);
     }
 
     private int id;
@@ -16,7 +17,7 @@ public class Obat{
     public int getId(){
         return id;
     }
-    public void setId(int id){
+    private void setId(int id){
         this.id = id;
     }
     public String getNamaObat(){

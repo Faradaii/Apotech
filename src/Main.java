@@ -37,7 +37,6 @@ public static void main(String[] args) {
 
 public static void init(){
     Obat obat1 = new Obat();
-    obat1.setId(3);
     obat1.setNamaObat("paramex");
     obat1.setHarga(20000);
 

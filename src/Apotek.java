@@ -100,6 +100,29 @@ public void updateInformasiObat(){
   
 }
 public void pemesananObat(){
+  RestockObat restockObat = new RestockObat();
+  System.out.printf("%nsilahkan masukan data laporan : ");
+  System.out.printf("%nnama : ");
+  String namaObat = scan.nextLine();
+  System.out.printf("kode obat : ");
+  String kodeObat = scan.nextLine();
+  System.out.printf("stok : ");
+  int stockObat = scan.nextInt();
+  scan.nextLine(); // solusi sementara agar pengisian nama
+  System.out.printf("Supplier : ");
+  String supplier = scan.nextLine();
+  System.out.printf("Harga : ");
+  int harga = scan.nextInt();
+  restockObat.setNamaObat(namaObat);
+  restockObat.setHarga(harga);
+  restockObat.setKodeObat(kodeObat);
+  restockObat.setStockObat(stockObat);
+  restockObat.setSupplier(supplier);
+  restockObat.setTotalHarga(restockObat.getHarga()*restockObat.getStockObat());
+
+  this.obats.add(restockObat.obat);
+  this.restockObats.add(restockObat);
+  
 }
 
 //section Laporan
@@ -111,6 +134,11 @@ public void showLaporanPenjualan(){
     }
 }
 public void showLaporanPemesanan(){
+  System.out.println("Laporan Penjualan");
+  System.out.printf("%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t  %-20s|\t %-20s|\t", "id Laporan", "Kode Obat", "Tanggal Restock", "Nama Obat", "Supllier", "stock","Harga", "Total Harga");
+  for (RestockObat restockObat : this.restockObats) {
+      System.out.printf("%n%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20d|\t %-20d|\t %-20d|\t", restockObat.getId(), restockObat.getKodeObat(), restockObat.getDate(), restockObat.getNamaObat(),restockObat.getSupplier(),restockObat.getStockObat(), restockObat.getHarga(),restockObat.getTotalHarga());
+    }
 }  
 
 // Section informasi obat dan memberships
