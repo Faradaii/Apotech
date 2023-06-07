@@ -1,7 +1,7 @@
 import java.util.ArrayList;
 import java.util.Scanner;
 
-public class Apotek{
+public class Apotek extends Saldo{
 
 Scanner scan = new Scanner(System.in);
 
@@ -26,9 +26,13 @@ public void pembelianObat(){
   laporan.setJenisPembayaran(scan.nextLine());
   System.out.printf("Silahkan masukan total item : ");
   laporan.setTotalItem(scan.nextInt());
+  obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
 
   laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
+  Saldo.setLaba(laporan.getTotalHarga() - (laporan.getTotalHarga()*10/12));
+
+
   System.out.printf("Apakah anda memiliki memberships ? (y/n) : ");
   String answer = scan.nextLine();
 
@@ -38,14 +42,13 @@ public void pembelianObat(){
     int idMember = scan.nextInt();
     Membership member = getMemberById(idMember);
     laporan.setPembeli(member.getNama());
+    laporan.setTotalHarga(laporan.getTotalItem()*(obat.getHarga()*10/12));
+    Saldo.setLaba(laporan.getTotalHarga());
+
+
   } 
 
-
-
   this.penjualanObats.add(laporan);
-
-
-
 
 }
 
@@ -102,7 +105,7 @@ public void updateInformasiObat(){
 public void pemesananObat(){
   RestockObat restockObat = new RestockObat();
   System.out.printf("%nsilahkan masukan data laporan : ");
-  System.out.printf("%nnama : ");
+  System.out.printf("%nnama obat : ");
   String namaObat = scan.nextLine();
   System.out.printf("kode obat : ");
   String kodeObat = scan.nextLine();
@@ -120,9 +123,17 @@ public void pemesananObat(){
   restockObat.setSupplier(supplier);
   restockObat.setTotalHarga(restockObat.getHarga()*restockObat.getStockObat());
 
+  Saldo.setKasBersih(-1*restockObat.getTotalHarga());
   this.obats.add(restockObat.obat);
   this.restockObats.add(restockObat);
   
+}
+public void showSaldo(){
+  System.out.printf("Saldo saat ini %n");
+  System.out.println("Kas bersih : ");
+  System.out.println(Saldo.getKasBersih());
+  System.out.println("Laba : ");
+  System.out.println(Saldo.getLaba());
 }
 
 //section Laporan
@@ -134,7 +145,7 @@ public void showLaporanPenjualan(){
     }
 }
 public void showLaporanPemesanan(){
-  System.out.println("Laporan Penjualan");
+  System.out.println("Laporan Pemesanan");
   System.out.printf("%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t  %-20s|\t %-20s|\t", "id Laporan", "Kode Obat", "Tanggal Restock", "Nama Obat", "Supllier", "stock","Harga", "Total Harga");
   for (RestockObat restockObat : this.restockObats) {
       System.out.printf("%n%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20d|\t %-20d|\t %-20d|\t", restockObat.getId(), restockObat.getKodeObat(), restockObat.getDate(), restockObat.getNamaObat(),restockObat.getSupplier(),restockObat.getStockObat(), restockObat.getHarga(),restockObat.getTotalHarga());
@@ -144,7 +155,7 @@ public void showLaporanPemesanan(){
 // Section informasi obat dan memberships
 public void showInformasiObat(){
     System.out.printf("Total jenis obat yang dijual :%d%n", Obat.jumlahObatKeseluruhan);
-    System.out.printf("%-4s| %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t", "id", "Nama Obat", "Kode Obat", "Untuk Penyakit", "Produksi Oleh", "Tahun Expired", "Harga Obat");
+    System.out.printf("%-4s| %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t", "id", "Nama Obat", "Kode Obat", "Stok", "Produksi Oleh", "Tahun Expired", "Harga Obat");
     for (Obat obat : this.obats) {
         System.out.printf("%n%-4d| %-20s|\t %-20s|\t %-20d|\t %-20s|\t %-20d|\t %-20d|\t", obat.getId(), obat.getNamaObat(), obat.getKodeObat(),obat.getStockObat(),obat.getProductby(),obat.getExpiredYear(), obat.getHarga());
       }

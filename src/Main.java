@@ -68,6 +68,12 @@ public static Integer chooseMenu(int hint){
             System.out.printf("Masukan input : ");
             choose = scan.nextInt();
         }   return choose;
+        case 3: 
+        while (choose < 1 || choose > 3){
+            System.out.printf("Input salah, Silahkan coba lagi! %n");
+            System.out.printf("Masukan input : ");
+            choose = scan.nextInt();
+        }   return choose;
     }
     return choose; //tidak dieksekusi
 }
@@ -89,7 +95,7 @@ public static void kasir() {
 public static void manajemenObat() {
     System.out.printf("%nSilahkan pilih menu berikut : %n");
     System.out.printf("\t1. Edit Informasi Obat %n");
-    System.out.printf("\t2. Pemesanan Obat %n");
+    System.out.printf("\t2. Restock Obat %n");
     System.out.printf("pilih menu? %n");
     int selected = chooseMenu(2);
     switch(selected){
@@ -103,10 +109,11 @@ public static void laporan() {
     System.out.printf("\t1. Lihat Informasi Penjualan Obat %n");
     System.out.printf("\t2. Lihat Informasi Pemesanan Obat %n");
     System.out.printf("pilih menu? %n");
-    int selected = chooseMenu(2);
+    int selected = chooseMenu(3);
     switch(selected){
         case 1 -> apotek.showLaporanPenjualan();
         case 2 -> apotek.showLaporanPemesanan();
+        case 3 -> apotek.showSaldo();
     }
 }
 

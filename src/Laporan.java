@@ -9,6 +9,8 @@ abstract class Laporan{
     public String namaObat;
     public int totalItem;
     public int totalHarga;
+
+    private static int saldo;
     
     public LocalDate generateDate(){
         LocalDate today = LocalDate.now();
