@@ -1,3 +1,8 @@
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileReader;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.Scanner;
 
 public class Main{
@@ -6,8 +11,9 @@ public class Main{
 static Scanner scan = new Scanner(System.in);
 static Apotek apotek = new Apotek();
 
-public static void main(String[] args) {
-    init();
+public static void main(String[] args) throws Exception{
+    loadData("obat");
+    loadData("member");
     String isContinue = "y";
 
     while (isContinue.equals("y")) {
@@ -32,15 +38,51 @@ public static void main(String[] args) {
         }
     }
 
+    saveData("obat");
+    saveData("member");
+
     
 }
 
-public static void init(){
-    Obat obat1 = new Obat();
-    obat1.setNamaObat("paramex");
-    obat1.setHarga(20000);
+public static void loadData(String x) throws IOException{
+    FileReader getFileReader = new FileReader("database/"+x+".txt");
+    BufferedReader baca = new BufferedReader(getFileReader);
+    
+    Scanner scanFile = new Scanner(baca);
+    if (x.equals("obat")) {
+        while (scanFile.hasNext()){
+            scanFile.useDelimiter(",");
+            Obat obat = new Obat();
+            scanFile.next().trim();
+            obat.setNamaObat(scanFile.next().trim());
+            obat.setKodeObat(scanFile.next().trim());
+            obat.setStockObat(Integer.valueOf(scanFile.next().trim()));
+            obat.setProductby(scanFile.next().trim());
+            scanFile.next().trim();
+            obat.setHarga(Integer.valueOf(scanFile.next().trim()));
+            apotek.obats.add(obat);
+            if (scanFile.nextLine().trim().isEmpty()) {
+                break;
+            }
+        }
+    } else if (x.equals("member")) {
+        while (scanFile.hasNext()){
+            scanFile.useDelimiter(",");
+            Membership member = new Membership();
+            scanFile.next().trim();
+            member.setNama(scanFile.next().trim());
+            member.setAlamat(scanFile.next().trim());
+            member.setJenisKelamin(scanFile.next().trim());
+            member.setNomorTelpon(scanFile.next().trim());
+            member.setUmur(scanFile.next().trim());
+            apotek.memberships.add(member);
+            if (scanFile.nextLine().trim().isEmpty()) {
+                break;
+            }
+        }
+    }
+    scanFile.close();
 
-    apotek.obats.add(obat1);
 }
 
 public static void showMenu(){
@@ -129,7 +171,33 @@ public static void informasiObatDanMember() {
 }
 
 public static void exit() {
+    try {
+        saveData("obat");
+        saveData("member");
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
     System.exit(0);
 }
+
+public static void saveData(String x) throws IOException {
+    //penggunaan ini jika database tidak kosong
+    FileWriter getFileWriter = new FileWriter("database/"+x+".txt");
+    BufferedWriter tulis = new BufferedWriter(getFileWriter);
+
+    if (x.equals("obat")) {
+        for (Obat obat : apotek.obats) {
+            tulis.write(obat.getId() + "," + obat.getNamaObat() + "," + obat.getKodeObat() + "," + obat.getStockObat() + "," + obat.getProductby() + "," + obat.getExpiredYear() + "," + obat.getHarga()+",");
+            tulis.newLine();
+        }
+    } else if (x.equals("member")){
+        for (Membership member : apotek.memberships) {
+            tulis.write(member.getId() + "," + member.getNama() + "," + member.getAlamat() + "," + member.getJenisKelamin() + "," + member.getNomorTelpon() + "," + member.getUmur() +",");
+            tulis.newLine();
+        }
+    }
+    tulis.close();
+}
+
 
 }

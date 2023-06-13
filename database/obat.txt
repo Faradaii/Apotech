@@ -1,0 +1,3 @@
+1,panadol,kl002,0,kalbe,0,2000,
+2,paramex,kl999,300,kolb,0,3600,
+3,popo,ko333,300,kalbe,0,370,

@@ -4,7 +4,7 @@ public class Membership{
 
     public Membership(){
         jumlahMembershipsKeseluruhan++;
-        id++;
+        this.setId(jumlahMembershipsKeseluruhan);
     }
 
     private String nama;
