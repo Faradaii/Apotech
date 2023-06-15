@@ -20,7 +20,7 @@ public static void main(String[] args) throws Exception{
     loadData("member");
     loadData("penjualanobat");
     loadData("restockobat");
-
+    loadData("saldo");
     String isContinue = "y";
 
     while (isContinue.equals("y")) {
@@ -44,16 +44,14 @@ public static void main(String[] args) throws Exception{
             isContinue = scan.next();
         }
     }
-
     saveData("obat");
     saveData("member");
     saveData("penjualanobat");
     saveData("restockobat");
-
-    
+    saveData("saldo");
 }
 
-public static void loadData(String x) throws IOException{
+private static void loadData(String x) throws IOException{
     FileReader getFileReader = new FileReader("database/"+x+".txt");
     BufferedReader baca = new BufferedReader(getFileReader);
     
@@ -118,11 +116,21 @@ public static void loadData(String x) throws IOException{
                 invoice.setJenisPembayaran(scanFile.next().trim());
                 invoice.setTotalItem(Integer.valueOf(scanFile.next().trim()));
                 invoice.setTotalHarga(Integer.valueOf(scanFile.next().trim()));
+                invoice.setPembeli((scanFile.next().trim()));
                 apotek.penjualanObats.add(invoice);
                 if(scanFile.nextLine().trim().isEmpty()){
                     break;
                 }
             }
+        
+    } else if(x.equals("saldo")){
+        while(scanFile.hasNext()){
+            Saldo.setKasBersih(Integer.valueOf(scanFile.next().trim()));
+            Saldo.setLaba(Integer.valueOf(scanFile.next().trim()));
+            if(scanFile.nextLine().trim().isEmpty()){
+                break;
+            }
+        }
     }
     scanFile.close();
 
@@ -193,6 +201,7 @@ public static void laporan() {
     System.out.printf("%nSilahkan pilih menu berikut : %n");
     System.out.printf("\t1. Lihat Informasi Penjualan Obat %n");
     System.out.printf("\t2. Lihat Informasi Pemesanan Obat %n");
+    System.out.printf("\t3. Lihat Informasi Saldo %n");
     System.out.printf("pilih menu? %n");
     int selected = chooseMenu(3);
     switch(selected){
@@ -219,13 +228,14 @@ public static void exit() {
         saveData("member");
         saveData("penjualanobat");
         saveData("restockobat");
+        saveData("saldo");
     } catch (IOException e) {
         e.printStackTrace();
     }
     System.exit(0);
 }
 
-public static void saveData(String x) throws IOException {
+private static void saveData(String x) throws IOException {
     //penggunaan ini jika database tidak kosong
     FileWriter getFileWriter = new FileWriter("database/"+x+".txt");
     BufferedWriter tulis = new BufferedWriter(getFileWriter);
@@ -241,25 +251,25 @@ public static void saveData(String x) throws IOException {
             tulis.newLine();
         }
     } else if (x.equals("restockobat")){
-        System.out.println("proses penyimpanan data restock obat");
-        for (int i = apotek.restockObats.size()-1 ; i >= 0 ; i--){
-            RestockObat invoice = apotek.restockObats.get(i);
+        for (RestockObat invoice : apotek.restockObats){
             tulis.write(invoice.getId() + "," + invoice.getKodeObat() + "," + invoice.getDate() + "," + invoice.getNamaObat() + "," + invoice.getSupplier() + "," + invoice.getStockObat() + "," +  invoice.getHarga() + "," + invoice.getTotalHarga() + ",");
             tulis.newLine();
         }
     } else if (x.equals("penjualanobat")) {
-        System.out.println("proses penyimpanan data penjualan obat");
-        for(int i = apotek.restockObats.size()-1 ; i >= 0 ; i--){
-            PenjualanObat invoice = apotek.penjualanObats.get(i);
-            tulis.write(invoice.getId() + "," + invoice.getIdObat() + "," + invoice.getDate() + "," + invoice.getNamaObat() + "," + invoice.getJenisPembayaran() + "," + invoice.getTotalItem() + "," + invoice.getTotalHarga() + ","   );
+        for(PenjualanObat invoice : apotek.penjualanObats){
+            tulis.write(invoice.getId() + "," + invoice.getIdObat() + "," + invoice.getDate() + "," + invoice.getNamaObat() + "," + invoice.getJenisPembayaran() + "," + invoice.getTotalItem() + "," + invoice.getTotalHarga() + "," + invoice.getPembeli() + ","  );
             tulis.newLine();
         }
     
+    } else if (x.equals("saldo")){
+        tulis.write(Saldo.getKasBersih() + "," + Saldo.getLaba() + ",");
+        tulis.newLine();
     }
     tulis.close();
 }
 
 private static String system(){
+    
     LocalDateTime date = LocalDateTime.now();
     // DateTimeFormatter hour = DateTimeFormatter.ofPattern("HH");
     int h = Integer.parseInt(date.format(DateTimeFormatter.ofPattern("HH")));
@@ -272,8 +282,7 @@ private static String system(){
     } else {
         return "Pagi";
     }
-    
-
 }
+
 
 }

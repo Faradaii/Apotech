@@ -42,6 +42,12 @@ public class RestockObat extends Laporan{
     public void setSupplier(String supplier){
         this.supplier = supplier;
     }
+    public void setSupplier(String supplier, Boolean x){
+        this.supplier = supplier;
+        if (x) {
+            obat.setProductby(supplier);
+        }
+    }
     public LocalDate getDate(){
         return this.date;
     }

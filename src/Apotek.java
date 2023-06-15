@@ -10,11 +10,13 @@ public ArrayList<Obat> obats = new ArrayList<Obat>();
 public ArrayList<Membership> memberships = new ArrayList<Membership>();
 public ArrayList<PenjualanObat> penjualanObats = new ArrayList<PenjualanObat>();
 public ArrayList<RestockObat> restockObats = new ArrayList<RestockObat>();
-
+public ArrayList<Struk> strukPenjualanObats = new ArrayList<Struk>();
 //section kasir 
 public void pembelianObat(){
   showInformasiObat();
   PenjualanObat laporan = new PenjualanObat();
+  Struk strukPenjualanObat = new Struk(); //ini khusus struk untuk dicetak
+
   System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
   int idObat = scan.nextInt();
   laporan.setIdObat(idObat);
@@ -32,7 +34,6 @@ public void pembelianObat(){
   laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
   Saldo.setLaba(laporan.getTotalHarga() - (laporan.getTotalHarga()*10/12));
 
-
   System.out.printf("Apakah anda memiliki memberships ? (y/n) : ");
   String answer = scan.nextLine();
 
@@ -40,16 +41,64 @@ public void pembelianObat(){
   if(answer.equalsIgnoreCase("y")){
     System.out.printf("Silahkan masukan id member : ");
     int idMember = scan.nextInt();
+    scan.nextLine();
     Membership member = getMemberById(idMember);
     laporan.setPembeli(member.getNama());
     laporan.setTotalHarga(laporan.getTotalItem()*(obat.getHarga()*10/12));
     Saldo.setLaba(laporan.getTotalHarga());
-
-
   } 
 
-  this.penjualanObats.add(laporan);
+  strukPenjualanObat.setKeseluruhan(laporan.getId(), laporan.getPembeli(), laporan.getJenisPembayaran());
+  strukPenjualanObat.tambahPembelian(laporan.getNamaObat(), laporan.getTotalItem(), laporan.getTotalHarga()/laporan.getTotalItem());
 
+  this.penjualanObats.add(laporan);
+  this.strukPenjualanObats.add(strukPenjualanObat);
+
+  System.out.printf("ada tambahan lagi? y/n: ");
+  while (scan.nextLine().equals("y")) {
+    pembelianObat(true, laporan.getJenisPembayaran(), laporan.getPembeli(), strukPenjualanObat.getId());
+  }
+
+  System.out.printf("Apakah struknya ingin dicetak? y/n : ");
+  if (scan.nextLine().equals("y")) {
+    strukPenjualanObat.cetak();    
+  }
+
+}
+
+public void pembelianObat(Boolean buyAgain, String jenisPembayaran, String pembeli, String strukId){
+  showInformasiObat();
+  PenjualanObat laporan = new PenjualanObat();
+  Struk strukPenjualanObat = getStrukById(strukId); //ini khusus struk untuk dicetak
+      System.out.println(strukPenjualanObat.getId());
+  System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
+  int idObat = scan.nextInt();
+  laporan.setIdObat(idObat);
+  scan.nextLine(); // solusi sementara agar pengisian nama terbaca
+  Obat obat = getObatById(idObat);
+  laporan.setNamaObat(obat.getNamaObat());
+
+  laporan.setJenisPembayaran(jenisPembayaran);
+  System.out.printf("Silahkan masukan total item : ");
+  laporan.setTotalItem(scan.nextInt());
+  obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
+  scan.nextLine(); // solusi sementara agar pengisian nama terbaca
+
+  laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
+  Saldo.setLaba(laporan.getTotalHarga() - (laporan.getTotalHarga()*10/12));
+
+  laporan.setPembeli(pembeli);
+  if(!laporan.getPembeli().equals("anonymous")){
+    laporan.setTotalHarga(laporan.getTotalItem()*(obat.getHarga()*10/12));
+    Saldo.setLaba(laporan.getTotalHarga());
+  } 
+
+  strukPenjualanObat.tambahPembelian(laporan.getNamaObat(), laporan.getTotalItem(), laporan.getTotalHarga()/laporan.getTotalItem());
+  this.penjualanObats.add(laporan);
+  this.strukPenjualanObats.add(strukPenjualanObat);
+
+
+  System.out.printf("ada tambahan lagi? y/n: ");
 }
 
 public void pembuatanMemberBaru(){
@@ -114,13 +163,16 @@ public void pemesananObat(){
   scan.nextLine(); // solusi sementara agar pengisian nama
   System.out.printf("Supplier : ");
   String supplier = scan.nextLine();
+  System.out.printf("Apakah produksi dilakukan oleh supplier ? y/n :");
+  if (scan.nextLine().equals("y")) {
+      restockObat.setSupplier(supplier, true);
+  }
   System.out.printf("Harga : ");
   int harga = scan.nextInt();
   restockObat.setNamaObat(namaObat);
   restockObat.setHarga(harga);
   restockObat.setKodeObat(kodeObat);
   restockObat.setStockObat(stockObat);
-  restockObat.setSupplier(supplier);
   restockObat.setTotalHarga(restockObat.getHarga()*restockObat.getStockObat());
 
   Saldo.setKasBersih(-1*restockObat.getTotalHarga());
@@ -139,9 +191,9 @@ public void showSaldo(){
 //section Laporan
 public void showLaporanPenjualan(){
   System.out.println("Laporan Penjualan");
-  System.out.printf("%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t", "id Laporan", "Kode Obat", "Tanggal Penjualan", "Nama Obat", "Jenis Pembayaran", "Total Item", "Total Harga");
+  System.out.printf("%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t", "id Laporan", "Kode Obat", "Tanggal Penjualan", "Nama Obat", "Jenis Pembayaran", "Total Item", "Total Harga", "Nama Pembeli");
   for (PenjualanObat penjualanObat : this.penjualanObats) {
-      System.out.printf("%n%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20d|\t %-20d|\t", penjualanObat.getId(), penjualanObat.getIdObat(), penjualanObat.getDate(), penjualanObat.getNamaObat(),penjualanObat.getJenisPembayaran(),penjualanObat.getTotalItem(),penjualanObat.getTotalHarga());
+      System.out.printf("%n%-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20s|\t %-20d|\t %-20d|\t %-20s|\t", penjualanObat.getId(), penjualanObat.getIdObat(), penjualanObat.getDate(), penjualanObat.getNamaObat(),penjualanObat.getJenisPembayaran(),penjualanObat.getTotalItem(),penjualanObat.getTotalHarga(), penjualanObat.getPembeli());
     }
 }
 public void showLaporanPemesanan(){
@@ -182,6 +234,15 @@ private Membership getMemberById(int id) {
   for (Membership member : this.memberships) {
     if (member.getId() == id) {
       return member;
+    }
+  }
+  return null;
+}
+
+private Struk getStrukById(String id) {
+  for (Struk struk : this.strukPenjualanObats) {
+    if (struk.getId().equals(id)) {
+      return struk;
     }
   }
   return null;
