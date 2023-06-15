@@ -3,6 +3,10 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+// import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 public class Main{
@@ -14,6 +18,9 @@ static Apotek apotek = new Apotek();
 public static void main(String[] args) throws Exception{
     loadData("obat");
     loadData("member");
+    loadData("penjualanobat");
+    loadData("restockobat");
+
     String isContinue = "y";
 
     while (isContinue.equals("y")) {
@@ -40,6 +47,8 @@ public static void main(String[] args) throws Exception{
 
     saveData("obat");
     saveData("member");
+    saveData("penjualanobat");
+    saveData("restockobat");
 
     
 }
@@ -49,9 +58,9 @@ public static void loadData(String x) throws IOException{
     BufferedReader baca = new BufferedReader(getFileReader);
     
     Scanner scanFile = new Scanner(baca);
+    scanFile.useDelimiter(",");
     if (x.equals("obat")) {
         while (scanFile.hasNext()){
-            scanFile.useDelimiter(",");
             Obat obat = new Obat();
             scanFile.next().trim();
             obat.setNamaObat(scanFile.next().trim());
@@ -67,7 +76,7 @@ public static void loadData(String x) throws IOException{
         }
     } else if (x.equals("member")) {
         while (scanFile.hasNext()){
-            scanFile.useDelimiter(",");
+            // scanFile.useDelimiter(",");
             Membership member = new Membership();
             scanFile.next().trim();
             member.setNama(scanFile.next().trim());
@@ -80,13 +89,47 @@ public static void loadData(String x) throws IOException{
                 break;
             }
         }
+    } else if (x.equals("restockobat")){
+            while (scanFile.hasNext()){
+                // scanFile.useDelimiter(",");
+                RestockObat invoice = new RestockObat();
+                invoice.setId(scanFile.next().trim());
+                invoice.setKodeObat(scanFile.next().trim());
+                invoice.setDate(LocalDate.parse(scanFile.next().trim()));
+                invoice.setNamaObat(scanFile.next().trim());
+                invoice.setSupplier(scanFile.next().trim());
+                invoice.setStockObat(Integer.valueOf(scanFile.next().trim()));
+                invoice.setHarga(Integer.valueOf(scanFile.next().trim()));
+                invoice.setTotalHarga(Integer.valueOf(scanFile.next().trim()));
+                apotek.restockObats.add(invoice);
+                if(scanFile.nextLine().trim().isEmpty()){
+                    break;
+                }
+
+            }  
+    } else if (x.equals("penjualanobat")) {
+            while(scanFile.hasNext()){
+                // scanFile.useDelimiter(",");
+                PenjualanObat invoice = new PenjualanObat();
+                invoice.setId(scanFile.next().trim());
+                invoice.setIdObat(Integer.valueOf(scanFile.next().trim()));
+                invoice.setDate(LocalDate.parse(scanFile.next().trim()));
+                invoice.setNamaObat(scanFile.next().trim());
+                invoice.setJenisPembayaran(scanFile.next().trim());
+                invoice.setTotalItem(Integer.valueOf(scanFile.next().trim()));
+                invoice.setTotalHarga(Integer.valueOf(scanFile.next().trim()));
+                apotek.penjualanObats.add(invoice);
+                if(scanFile.nextLine().trim().isEmpty()){
+                    break;
+                }
+            }
     }
     scanFile.close();
 
 }
 
 public static void showMenu(){
-    System.out.printf("%nSelamat {jam}! %nSilahkan pilih menu berikut : %n");
+    System.out.printf("%nSelamat %s! %nSilahkan pilih menu berikut : %n", system());
     System.out.printf("\t1. Kasir %n");
     System.out.printf("\t2. Manajemen Obat %n");
     System.out.printf("\t3. Laporan Penjualan dan Pemesanan Obat %n");
@@ -174,6 +217,8 @@ public static void exit() {
     try {
         saveData("obat");
         saveData("member");
+        saveData("penjualanobat");
+        saveData("restockobat");
     } catch (IOException e) {
         e.printStackTrace();
     }
@@ -195,9 +240,40 @@ public static void saveData(String x) throws IOException {
             tulis.write(member.getId() + "," + member.getNama() + "," + member.getAlamat() + "," + member.getJenisKelamin() + "," + member.getNomorTelpon() + "," + member.getUmur() +",");
             tulis.newLine();
         }
+    } else if (x.equals("restockobat")){
+        System.out.println("proses penyimpanan data restock obat");
+        for (int i = apotek.restockObats.size()-1 ; i >= 0 ; i--){
+            RestockObat invoice = apotek.restockObats.get(i);
+            tulis.write(invoice.getId() + "," + invoice.getKodeObat() + "," + invoice.getDate() + "," + invoice.getNamaObat() + "," + invoice.getSupplier() + "," + invoice.getStockObat() + "," +  invoice.getHarga() + "," + invoice.getTotalHarga() + ",");
+            tulis.newLine();
+        }
+    } else if (x.equals("penjualanobat")) {
+        System.out.println("proses penyimpanan data penjualan obat");
+        for(int i = apotek.restockObats.size()-1 ; i >= 0 ; i--){
+            PenjualanObat invoice = apotek.penjualanObats.get(i);
+            tulis.write(invoice.getId() + "," + invoice.getIdObat() + "," + invoice.getDate() + "," + invoice.getNamaObat() + "," + invoice.getJenisPembayaran() + "," + invoice.getTotalItem() + "," + invoice.getTotalHarga() + ","   );
+            tulis.newLine();
+        }
+    
     }
     tulis.close();
 }
 
+private static String system(){
+    LocalDateTime date = LocalDateTime.now();
+    // DateTimeFormatter hour = DateTimeFormatter.ofPattern("HH");
+    int h = Integer.parseInt(date.format(DateTimeFormatter.ofPattern("HH")));
+    if (h >= 19) {
+        return "Malam";
+    } else if (h >= 16){
+        return "Sore";
+    } else if (h >= 12){
+        return "Siang";
+    } else {
+        return "Pagi";
+    }
+    
+
+}
 
 }

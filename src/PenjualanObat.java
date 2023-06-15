@@ -16,6 +16,9 @@ public class PenjualanObat extends Laporan {
     public void setId() {
         this.id = "A0"+ idLaporan;
     }
+    public void setId(String id){
+        this.id = id;
+    }
     public int getIdObat() {
         return idObat;
     } 
@@ -58,6 +61,9 @@ public class PenjualanObat extends Laporan {
     }
     public void setDate(){
         this.date = super.generateDate();
+    }
+    public void setDate(LocalDate date){
+        this.date = date;
     }
     
 

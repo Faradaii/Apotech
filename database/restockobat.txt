@@ -1,0 +1,2 @@
+Z04,f444,2023-06-15,formula 44,pt mii,30,40000,1200000,
+Z01,p5555,2023-06-15,paracetamol,pt kimi makmur,5,3000,15000,

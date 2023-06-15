@@ -19,6 +19,9 @@ public class RestockObat extends Laporan{
     public void setId() {
         this.id = "Z0"+ idLaporan;
     }
+    public void setId(String id){
+        this.id = id;
+    }
     public String getKodeObat() {
         return kodeObat;
     } 
@@ -44,6 +47,10 @@ public class RestockObat extends Laporan{
     }
     public void setDate(){
         this.date = super.generateDate();
+    }
+    //overloading
+    public void setDate(LocalDate date){
+        this.date = date;
     }
     public int getStockObat(){
         return stockObat;
