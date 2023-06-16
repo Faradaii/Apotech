@@ -21,6 +21,12 @@ public static void main(String[] args) throws Exception{
     loadData("penjualanobat");
     loadData("restockobat");
     loadData("saldo");
+
+    Boolean sukses = login();
+    while (!sukses){
+        sukses = login();
+    }
+
     String isContinue = "y";
 
     while (isContinue.equals("y")) {
@@ -137,10 +143,10 @@ private static void loadData(String x) throws IOException{
 }
 
 public static void showMenu(){
-    System.out.printf("%nSelamat %s! %nSilahkan pilih menu berikut : %n", system());
+    System.out.printf("%nSelamat %s! %nSilahkan pilih menu berikut : %n", greeting());
     System.out.printf("\t1. Kasir %n");
     System.out.printf("\t2. Manajemen Obat %n");
-    System.out.printf("\t3. Laporan Penjualan dan Pemesanan Obat %n");
+    System.out.printf("\t3. Laporan Penjualan, Pemesanan Obat dan Saldo %n");
     System.out.printf("\t4. Informasi Obat dan Member %n");
     System.out.printf("\t5. Exit %n");
 }
@@ -268,7 +274,7 @@ private static void saveData(String x) throws IOException {
     tulis.close();
 }
 
-private static String system(){
+private static String greeting(){
     
     LocalDateTime date = LocalDateTime.now();
     // DateTimeFormatter hour = DateTimeFormatter.ofPattern("HH");
@@ -282,6 +288,30 @@ private static String system(){
     } else {
         return "Pagi";
     }
+}
+
+private static Boolean login() throws IOException{
+    System.out.printf("Silahkan masukan username : ");
+    String username = scan.nextLine();
+    System.out.printf("Silahkan masukan password : ");
+    String password = scan.nextLine();
+    FileReader getFileReader = new FileReader("admin/admin.txt");
+    BufferedReader baca = new BufferedReader(getFileReader);
+    Scanner scanFile = new Scanner(baca);
+    scanFile.useDelimiter(",");
+    while (scanFile.hasNext()) {
+        if (username.equals(scanFile.next().trim()) && password.equals(scanFile.next().trim())) {
+            scanFile.close();
+            return true;
+        } 
+        if(scanFile.nextLine().trim().isEmpty()){
+            break;
+        }
+    }
+    System.out.println("Username or Password wrong! Try again");
+    scanFile.close();
+    return false;
+
 }
 
 

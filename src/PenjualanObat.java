@@ -9,6 +9,10 @@ public class PenjualanObat extends Laporan {
         this.setId();
         this.setDate();
     }
+    public PenjualanObat(String id){
+        this.setId(id);
+        this.setDate();
+    }
 
     public String getId() {
         return id;

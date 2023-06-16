@@ -1,5 +1,0 @@
-1,paracetamol,p000,277,null,0,4800,
-2,panadol,ko000,271,kalbe,0,36000,
-3,p,p,-17,null,0,2,
-4,v,v,-8,null,0,4,
-5,e,e,-27,e,0,4,

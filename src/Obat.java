@@ -13,6 +13,7 @@ public class Obat{
     private String productby;
     private int expiredYear;
     private int harga;
+    private int hargaMember;
 
     public int getId(){
         return id;
@@ -55,6 +56,9 @@ public class Obat{
     }
     public void setHarga(int harga){
         this.harga = harga;
+    }
+    public int getHargaMember(){
+        return harga*10/12;
     }
 
 

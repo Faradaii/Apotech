@@ -8,6 +8,9 @@ public class Struk {
     private int totalHargaKeseluruhan;
     private String jenisPembayaran;
     private String namaPembeli;
+    private String date;
+    private int bayar;
+    private int beforeDiskon;
     private ArrayList<String> namaItem = new ArrayList<>();
     private ArrayList<Integer> jumlahItem = new ArrayList<>();
     private ArrayList<Integer> hargaPerItem = new ArrayList<>();
@@ -17,23 +20,32 @@ public class Struk {
         FileWriter getFile = new FileWriter("export/struk-"+ this.id +".txt");
         PrintWriter printWriter = new PrintWriter(getFile);  
 
-        printWriter.printf("%-5s %-14s %-17s\n", "", "","Apotech");
-        printWriter.printf("%-2s %-45s %-2s\n", "","-------------------------------------------","");
-        printWriter.printf("%-5s %-7s %-15s\n", "", "","Struk Pembelian Obat");
-        printWriter.printf("%-2s %-45s %-2s\n", "","-------------------------------------------","");
-        printWriter.printf("%-5s %-40s %-5s\n", "",getNamaPembeli(),"");
-        printWriter.printf("%-2s %-45s %-2s\n", "","-------------------------------------------","");
-        printWriter.printf("%-5s %-5s %-15s %-10s %-15s\n", "", "QTY", "Nama Item", "Harga", "Total");
+        printWriter.printf("\t\t\t\t\t   %s\n","Apotech");
+        printWriter.printf("\t%s\n", "-------------------------------------------------");
+        printWriter.printf("\t\t\t\t%s\n", "Struk Pembelian Obat");
+        printWriter.printf("\t\t\t\t%5s%s\n"," ", getDate());
+        printWriter.printf("\t%s\n", "-------------------------------------------------");
+        printWriter.printf("\t\t%-5s\t%-15s %7s\t\t%-8s\n", "QTY","Nama Item","Harga","Total");
+        printWriter.printf("\t%s\n", "-------------------------------------------------");
         for(int i = 0 ; i < namaItem.size() ; i++){
-            printWriter.printf("%-5s %-5d %-15s %-10s %-15s\n", "", jumlahItem.get(i), namaItem.get(i), hargaPerItem.get(i), hargaPerItem.get(i)*jumlahItem.get(i));
+            printWriter.printf("\t\t%-5d\t%-15s %7s\t %8s\n", jumlahItem.get(i), namaItem.get(i), hargaPerItem.get(i), hargaPerItem.get(i)*jumlahItem.get(i));
 
+        }        
+        printWriter.printf("\t%s\n", "-------------------------------------------------");
+        printWriter.printf("\t\t%-30s Rp. %6d\n","Grand Total", getBeforeDiskon());
+        printWriter.printf("\t\t%-30s Rp. %6d\n","Total Disc.", getBeforeDiskon()-getTotalHargaKeseluruhan());
+        printWriter.printf("\t\t%-30s Rp. %6d\n","Total Belanja", getTotalHargaKeseluruhan());
+        printWriter.printf("\t\t%-30s Rp. %6d\n",getJenisPembayaran(), getBayar());
+        printWriter.printf("\t\t%-30s Rp. %6d\n","Kembali", getBayar()-getTotalHargaKeseluruhan());
+        printWriter.printf("\t%s\n", "-------------------------------------------------");
+        if (!this.namaPembeli.equals("anonymous")) {
+            printWriter.printf("\t\t%-30s @%10s\n", "member",getNamaPembeli());
+        } else {
+            printWriter.printf("\t\t%-30s @%10s\n", "member","non-member");
         }
-        printWriter.printf("%-2s %-45s %-2s\n", "","-------------------------------------------","");
-        printWriter.printf("%-5s %-30s Rp. %-25d\n", "","SubTotal", getTotalHargaKeseluruhan());
-        printWriter.printf("%-5s %-30s %-25s\n", "","Jenis Pembayaran", getJenisPembayaran());
-        printWriter.printf("%-2s %-45s %-2s\n", "","-------------------------------------------","");
-        printWriter.printf("%-5s %-13s %-16s\n", "","","Semoga Lekas Sembuh");
-        printWriter.printf("%-2s %-45s %-2s\n", "","-------------------------------------------","");
+        printWriter.printf("\t%s\n", "-------------------------------------------------");
+        printWriter.printf("\t\t\t\t%2s%s\n", " ", "Semoga Lekas Sembuh");
+        printWriter.printf("\t%s\n", "-------------------------------------------------");
 
         printWriter.close();
         } catch (IOException e) {
@@ -41,10 +53,11 @@ public class Struk {
         }
     }
 
-    public void setKeseluruhan(String id, String namaPembeli, String jenisPembayaran){
+    public void setKeseluruhan(String id, String namaPembeli, String jenisPembayaran, String date){
         setId(id);
         setNamaPembeli(namaPembeli);
         setJenisPembayaran(jenisPembayaran);
+        setDate(date);
     }
 
     public String getId(){
@@ -53,12 +66,25 @@ public class Struk {
     public void setId(String id){
         this.id = id;
     }
+    public String getDate(){
+        return this.date;
+    }
+    public void setDate(String date){
+        this.date = date;
+    }
 
     public int getTotalHargaKeseluruhan(){
         return this.totalHargaKeseluruhan;
     }
     public void setTotalHargaKeseluruhan(int totalHargaKeseluruhan){
         this.totalHargaKeseluruhan += totalHargaKeseluruhan;
+    }
+
+    public int getBeforeDiskon(){
+        return this.beforeDiskon;
+    }
+    public void setBeforeDiskon(int beforeDiskon){
+        this.beforeDiskon += beforeDiskon;
     }
 
     public String getNamaPembeli(){
@@ -75,11 +101,19 @@ public class Struk {
         this.jenisPembayaran = jenisPembayaran;
     }
 
-    public void tambahPembelian(String namaItem, int jumlahItem, int hargaPerItem){
+    public void tambahPembelian(String namaItem, int jumlahItem, int hargaBefore, int hargaAfter){
         this.namaItem.add(namaItem);
         this.jumlahItem.add(jumlahItem);
-        this.hargaPerItem.add(hargaPerItem);
-        this.totalHargaKeseluruhan += jumlahItem*hargaPerItem;
+        this.hargaPerItem.add(hargaBefore);
+        this.totalHargaKeseluruhan += jumlahItem*hargaAfter;
+        this.beforeDiskon += jumlahItem*hargaBefore;
+    }
+    
+    public int getBayar(){
+        return this.bayar;
+    }
+    public void setBayar(int bayar){
+        this.bayar = bayar;
     }
 
 }
