@@ -1,5 +1,5 @@
 class Saldo {
-    private static int pendapatan = 0; //todo getting from txt
+    private static int pendapatan = 0; 
     private static int pengeluaran = 0;
 
     public static void setPengeluaran(int pengeluaran){

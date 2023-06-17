@@ -14,4 +14,8 @@ abstract class Laporan{
         LocalDate today = LocalDate.now();
         return today;
     }
+
+    public void setId(String id){
+        this.id = id;
+    }
 }
