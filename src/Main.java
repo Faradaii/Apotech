@@ -131,8 +131,8 @@ private static void loadData(String x) throws IOException{
         
     } else if(x.equals("saldo")){
         while(scanFile.hasNext()){
-            Saldo.setKasBersih(Integer.valueOf(scanFile.next().trim()));
-            Saldo.setLaba(Integer.valueOf(scanFile.next().trim()));
+            Saldo.setPengeluaran(Integer.valueOf(scanFile.next().trim()));
+            Saldo.setPendapatan(Integer.valueOf(scanFile.next().trim()));
             if(scanFile.nextLine().trim().isEmpty()){
                 break;
             }
@@ -268,7 +268,7 @@ private static void saveData(String x) throws IOException {
         }
     
     } else if (x.equals("saldo")){
-        tulis.write(Saldo.getKasBersih() + "," + Saldo.getLaba() + ",");
+        tulis.write(Saldo.getPengeluaran() + "," + Saldo.getPendapatan() + ",");
         tulis.newLine();
     }
     tulis.close();

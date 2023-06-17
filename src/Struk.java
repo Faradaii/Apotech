@@ -39,7 +39,7 @@ public class Struk {
         printWriter.printf("\t\t%-30s Rp. %6d\n","Kembali", getBayar()-getTotalHargaKeseluruhan());
         printWriter.printf("\t%s\n", "-------------------------------------------------");
         if (!this.namaPembeli.equals("anonymous")) {
-            printWriter.printf("\t\t%-30s @%10s\n", "member",getNamaPembeli());
+            printWriter.printf("\t\t%-30s @%s\n", "member",getNamaPembeli());
         } else {
             printWriter.printf("\t\t%-30s @%10s\n", "member","non-member");
         }

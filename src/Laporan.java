@@ -10,8 +10,6 @@ abstract class Laporan{
     public int totalItem;
     public int totalHarga;
 
-    private static int saldo;
-    
     public LocalDate generateDate(){
         LocalDate today = LocalDate.now();
         return today;

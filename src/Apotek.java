@@ -31,9 +31,6 @@ public void pembelianObat(){
   obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
 
-  laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
-  Saldo.setLaba(laporan.getTotalHarga() - (laporan.getTotalHarga()*10/12));
-
   System.out.printf("Apakah anda memiliki memberships ? (y/n) : ");
   String answer = scan.nextLine();
 
@@ -45,8 +42,10 @@ public void pembelianObat(){
     Membership member = getMemberById(idMember);
     laporan.setPembeli(member.getNama());
     laporan.setTotalHarga(laporan.getTotalItem()*(obat.getHargaMember()));
-    Saldo.setLaba(laporan.getTotalHarga());
-  } 
+  } else {
+    laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
+  }
+  Saldo.setPendapatan(laporan.getTotalHarga());
 
   strukPenjualanObat.setKeseluruhan(laporan.getId(), laporan.getPembeli(), laporan.getJenisPembayaran(), String.valueOf(laporan.getDate()));
   strukPenjualanObat.tambahPembelian(laporan.getNamaObat(), laporan.getTotalItem(), obat.getHarga(), laporan.getTotalHarga()/laporan.getTotalItem());
@@ -87,15 +86,14 @@ public void pembelianObat(Boolean buyAgain, String jenisPembayaran, String pembe
   obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
 
-  laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
-  Saldo.setLaba(laporan.getTotalHarga() - (laporan.getTotalHarga()*10/12));
-
   laporan.setPembeli(pembeli);
   if(!laporan.getPembeli().equals("anonymous")){
     laporan.setTotalHarga(laporan.getTotalItem()*(obat.getHargaMember()));
-    Saldo.setLaba(laporan.getTotalHarga());
-  } 
-
+  } else {
+    laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
+  }
+  
+  Saldo.setPendapatan(laporan.getTotalHarga());
   strukPenjualanObat.tambahPembelian(laporan.getNamaObat(), laporan.getTotalItem(), obat.getHarga(), laporan.getTotalHarga()/laporan.getTotalItem());
   this.penjualanObats.add(laporan);
   this.strukPenjualanObats.add(strukPenjualanObat);
@@ -176,15 +174,17 @@ public void pemesananObat(){
   restockObat.setStockObat(stockObat);
   restockObat.setTotalHarga(restockObat.getHarga()*restockObat.getStockObat());
 
-  Saldo.setKasBersih(-1*restockObat.getTotalHarga());
+  Saldo.setPengeluaran(restockObat.getTotalHarga());
   this.obats.add(restockObat.obat);
   this.restockObats.add(restockObat);
   
 }
 public void showSaldo(){
   System.out.printf("Saldo saat ini %n");
-  System.out.print("Kas bersih : ");
-  System.out.println(Saldo.getKasBersih());
+  System.out.print("Pengeluaran : ");
+  System.out.println(Saldo.getPengeluaran());
+  System.out.print("Pendapatan : ");
+  System.out.println(Saldo.getPendapatan());
   System.out.print("Laba : ");
   System.out.println(Saldo.getLaba());
 }
