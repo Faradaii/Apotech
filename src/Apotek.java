@@ -22,6 +22,13 @@ public void pembelianObat(){
   laporan.setIdObat(idObat);
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
   Obat obat = getObatById(idObat);
+  while(obat.getStockObat() <= 0){
+    System.out.printf("Stock obat habis, mohon pilih obat yang lain!");
+    System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
+    idObat = scan.nextInt();
+    laporan.setIdObat(idObat);
+    obat = getObatById(idObat);
+  }
   laporan.setNamaObat(obat.getNamaObat());
 
   System.out.printf("Silahkan masukan jenis pembayaran : ");
@@ -78,6 +85,13 @@ public void pembelianObat(Boolean buyAgain, String jenisPembayaran, String pembe
   laporan.setIdObat(idObat);
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
   Obat obat = getObatById(idObat);
+  while(obat.getStockObat() <= 0){
+    System.out.printf("Stock obat habis, mohon pilih obat yang lain!");
+    System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
+    idObat = scan.nextInt();
+    laporan.setIdObat(idObat);
+    obat = getObatById(idObat);
+  }
   laporan.setNamaObat(obat.getNamaObat());
 
   laporan.setJenisPembayaran(jenisPembayaran);
