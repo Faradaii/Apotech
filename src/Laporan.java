@@ -2,20 +2,20 @@ import java.time.LocalDate;
 
 abstract class Laporan{
 
-    public static int idLaporan;
-    public String id;
-    public int idObat;
-    public LocalDate date;
-    public String namaObat;
-    public int totalItem;
-    public int totalHarga;
+    protected static int idLaporan;
+    protected String id;
+    protected int idObat;
+    protected LocalDate date;
+    protected String namaObat;
+    protected int totalItem;
+    protected int totalHarga;
 
     public LocalDate generateDate(){
         LocalDate today = LocalDate.now();
         return today;
     }
 
-    public void setId(String id){
-        this.id = id;
+    public int showJumlah(){
+        return idLaporan;
     }
 }

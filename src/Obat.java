@@ -5,6 +5,8 @@ public class Obat{
         jumlahObatKeseluruhan++;
         this.setId(jumlahObatKeseluruhan);
     }
+    
+
 
     private int id;
     private String namaObat;
@@ -57,7 +59,7 @@ public class Obat{
         this.harga = harga;
     }
     public int getHargaMember(){
-        return harga*10/12;
+        return this.harga*10/12;
     }
 
 

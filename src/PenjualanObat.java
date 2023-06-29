@@ -1,17 +1,27 @@
 import java.time.LocalDate;
 public class PenjualanObat extends Laporan {
 
+    private static int jumlahLaporan = 0;
     private String pembeli;
     private String jenisPembayaran;
 
     public PenjualanObat(){
         idLaporan++;
+        jumlahLaporan++;
         this.setId();
         this.setDate();
     }
     public PenjualanObat(String id){
+        jumlahLaporan++;
         this.setId(id);
         this.setDate();
+    }
+
+    public int showJumlah(){
+        return jumlahLaporan;
+    }
+    public int showJumlahKeseluruhan(){
+        return super.showJumlah();
     }
 
     public String getId() {
