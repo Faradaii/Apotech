@@ -278,6 +278,10 @@ public void pemesananObat(){
   }
   System.out.printf("Harga : ");
   int harga = scan.nextInt();
+  while (harga < 0) {
+    System.out.println("harga tidak valid, ulangi !");
+    harga = scan.nextInt();
+  }
   obat.setHarga(harga*12/10);
   restockObat.setNamaObat(namaObat);
   restockObat.setHarga(harga);
