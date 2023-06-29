@@ -14,10 +14,6 @@ class Saldo {
     public static int getPendapatan(){
         return pendapatan;
     }
-    // public static void setLaba(int laba){
-    //     Saldo.laba += laba;
-    //     setpendapatan(laba);
-    // }
     public static int getLaba(){
         if (Saldo.pendapatan - Saldo.pengeluaran > 0) {
             return getPendapatan() - getPengeluaran();

@@ -29,7 +29,6 @@ public class PenjualanObat extends Laporan {
     public void setIdObat(int idObat){
         this.idObat = idObat;
     }
-
     public String getPembeli(){
         return pembeli;
     }
