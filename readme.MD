@@ -103,6 +103,7 @@ Setiap menyelesaikan program akan menyimpan data yang telah dilakukan ke dalam d
     
     4. Laporan
        a. generateDate()
+       b. showJumlah()
     
     5. PenjualanObat
         a. getId()
@@ -123,6 +124,8 @@ Setiap menyelesaikan program akan menyimpan data yang telah dilakukan ke dalam d
         p. getDate()
         q. setDate()
         r. setDate(@param)
+        s. showJumlah()
+        t. showJumlahKeseluruhan()
     
     6. RestockObat
         a. setId()
@@ -143,11 +146,13 @@ Setiap menyelesaikan program akan menyimpan data yang telah dilakukan ke dalam d
         p. setTotalHarga()
         q. setHarga()
         r. getHarga()
+        s. showJumlah()
+        t. showJumlahKeseluruhan()
     
     7. Saldo
-        a. setPengeluaran()
+        a. tambahPengeluaran()
         b. getPengeluaran()
-        c. setPendapatan()
+        c. tambahPendapatan()
         d. getPendapatan()
         e. getLaba()
     
@@ -169,3 +174,15 @@ Setiap menyelesaikan program akan menyimpan data yang telah dilakukan ke dalam d
         o. tambahPembelian()
         p. getBayar()
         q. setBayar()
+
+    9. SistemApotek
+        a. public void pembelianObat();
+        b. pembelianObat(@params);
+        c. pembuatanMemberBaru();
+        d. updateInformasiObat();
+        e. pemesananObat();
+        f. showLaporanPenjualan();
+        g. showLaporanPemesanan();
+        h. showSaldo();
+        i. showInformasiObat();
+        j. showInformasiMemberships();

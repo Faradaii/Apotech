@@ -1,14 +1,14 @@
-class Saldo {
+class Saldo{
     private static int pendapatan = 0; 
     private static int pengeluaran = 0;
 
-    public static void setPengeluaran(int pengeluaran){
+    public static void tambahPengeluaran(int pengeluaran){
         Saldo.pengeluaran += pengeluaran;
     }
     public static Integer getPengeluaran(){
         return Saldo.pengeluaran;
     }
-    public static void setPendapatan(int pendapatan){
+    public static void tambahPendapatan(int pendapatan){
         Saldo.pendapatan += pendapatan;
     }
     public static int getPendapatan(){

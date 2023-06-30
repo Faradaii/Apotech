@@ -7,10 +7,9 @@ import java.util.Scanner;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
 
-public class Apotek extends Saldo{
+public class Apotek extends Saldo implements SistemApotek{
 
 Scanner scan = new Scanner(System.in);
-
 
 public ArrayList<Obat> obats = new ArrayList<Obat>();
 public ArrayList<Membership> memberships = new ArrayList<Membership>();
@@ -20,16 +19,14 @@ public ArrayList<Struk> strukPenjualanObats = new ArrayList<Struk>();
 //section kasir 
 public void pembelianObat(){
   showInformasiObat();
-  PenjualanObat laporan = new PenjualanObat();
-  Struk strukPenjualanObat = new Struk(); //ini khusus struk untuk dicetak
-
   System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
   int idObat = scan.nextInt();
-  laporan.setIdObat(idObat);
-  scan.nextLine(); // solusi sementara agar pengisian nama terbaca
   Obat obat = getObatById(idObat);
+  
+  //jika obat kosong atau tidak valid
   while (obat == null) {
     System.out.print("obat tidak ada! ingin kembali? (y/n) : ");
+    scan.nextLine(); // solusi sementara agar pengisian nama terbaca
     String answer = scan.nextLine();
     if (answer.equalsIgnoreCase("y")){
       return;
@@ -37,44 +34,44 @@ public void pembelianObat(){
     System.out.print("Silahkan ulangi masukan id obat!\n");
     System.out.print("id obat : ");
     idObat = scan.nextInt();
-    scan.nextLine();
     obat = getObatById(idObat);
   }
 
+  //jika stock abis
   while(obat.getStockObat() <= 0){
     System.out.printf("Stock obat habis, mohon pilih obat yang lain!");
     System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
     idObat = scan.nextInt();
-    laporan.setIdObat(idObat);
     obat = getObatById(idObat);
   }
-  laporan.setNamaObat(obat.getNamaObat());
 
+  PenjualanObat laporan = new PenjualanObat();
+  Struk strukPenjualanObat = new Struk(); //ini khusus struk untuk dicetak
 
+  //total item yang ingin dibeli
   System.out.printf("Silahkan masukan total item : ");
   int totalItem = scan.nextInt();
+  scan.nextLine(); // solusi sementara agar pengisian nama terbaca
   while (totalItem > obat.getStockObat() || totalItem < 0) {
     System.out.printf("Jumlah yang anda masukan tidak masuk akal, silahkan ulangi! \n");
     System.out.printf("Silahkan masukan total item : ");
     totalItem = scan.nextInt();
-    
   }
-  laporan.setTotalItem(totalItem);
-  obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
 
   System.out.printf("Apakah anda memiliki memberships ? (y/n) : ");
   String answer = scan.nextLine();
 
-  laporan.setPembeli("anonymous");
   if(answer.equalsIgnoreCase("y")){
-    System.out.printf("Silahkan masukan id member : ");
+    showInformasiMemberships();
+    System.out.printf("%nSilahkan masukan id member : ");
     int idMember = scan.nextInt();
     scan.nextLine();
     Membership member = getMemberById(idMember);
     if (member != null) {
       laporan.setPembeli(member.getNama());
     }
+    //jika id member tidak ditemukan
     while (member == null) {
       System.out.printf("id member tidak ada! ingin lanjut? y/n (n jika member tidak ada) : ");
       String lanjut = scan.nextLine();
@@ -84,7 +81,7 @@ public void pembelianObat(){
       } 
       try {
         showInformasiMemberships();
-        System.out.printf("Silahkan masukan id member : ");
+        System.out.printf("\nSilahkan masukan id member : ");
         idMember = scan.nextInt();
         scan.nextLine();
         member = getMemberById(idMember);
@@ -93,40 +90,53 @@ public void pembelianObat(){
         continue;
       }
     }
-  } 
+  } else {
+      laporan.setPembeli("anonymous");
+  }
 
+  //pengecekan harga jika member atau tidak
+  laporan.setTotalItem(totalItem);
   if (laporan.getPembeli().equals("anonymous")) {
     laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
   } else {
     laporan.setTotalHarga(laporan.getTotalItem()*(obat.getHargaMember()));
   }
 
-    System.out.printf("Silahkan masukan jenis pembayaran : ");
-    laporan.setJenisPembayaran(scan.nextLine());
+  System.out.printf("Silahkan masukan jenis pembayaran : ");
+  laporan.setJenisPembayaran(scan.nextLine());
+  laporan.setIdObat(idObat);
+  laporan.setNamaObat(obat.getNamaObat());
+  obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
 
-
-  Saldo.setPendapatan(laporan.getTotalHarga());
+  Saldo.tambahPendapatan(laporan.getTotalHarga());
 
   strukPenjualanObat.setKeseluruhan(laporan.getId(), laporan.getPembeli(), laporan.getJenisPembayaran(), String.valueOf(laporan.getDate()));
   strukPenjualanObat.tambahPembelian(laporan.getNamaObat(), laporan.getTotalItem(), obat.getHarga(), laporan.getTotalHarga()/laporan.getTotalItem());
 
+  //menambah ke arraylist
   this.penjualanObats.add(laporan);
   this.strukPenjualanObats.add(strukPenjualanObat);
 
+  //pertanyaan jika pembeli ingin menambah pesanan obat
   System.out.printf("ada tambahan lagi? y/n: ");
   while (scan.nextLine().equals("y")) {
     pembelianObat(true, laporan.getJenisPembayaran(), laporan.getPembeli(), strukPenjualanObat.getId());
   }
+
+  //pembayaran dan masukan tunai
   System.out.printf("Total belanja pelanggan : %d", strukPenjualanObat.getTotalHargaKeseluruhan());
-  System.out.printf("Silahkan masukan total bayar pelanggan : ");
+  System.out.printf("\nSilahkan masukan total bayar pelanggan : ");
   int pelangganBayar = scan.nextInt();
   while (pelangganBayar < strukPenjualanObat.getTotalHargaKeseluruhan()){
     System.out.println("Uangnya kurang, mintain lagi!");
-      pelangganBayar = scan.nextInt();
+    System.out.printf("Total belanja pelanggan : %d", strukPenjualanObat.getTotalHargaKeseluruhan());
+    System.out.printf("\nSilahkan masukan total bayar pelanggan : ");
+    pelangganBayar = scan.nextInt();
   }
   strukPenjualanObat.setBayar(pelangganBayar);
   scan.nextLine(); //untuk clear scanner
 
+  //pertanyaan untuk mencetak struk
   System.out.printf("Apakah struknya ingin dicetak? y/n : ");
   if (scan.nextLine().equals("y")) {
     strukPenjualanObat.cetak();    
@@ -135,15 +145,12 @@ public void pembelianObat(){
 }
 public void pembelianObat(Boolean buyAgain, String jenisPembayaran, String pembeli, String strukId){
   showInformasiObat();
-  PenjualanObat laporan = new PenjualanObat(strukId);
-  Struk strukPenjualanObat = getStrukById(strukId); //ini khusus struk untuk dicetak
   System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
   int idObat = scan.nextInt();
-  laporan.setIdObat(idObat);
-  scan.nextLine(); // solusi sementara agar pengisian nama terbaca
   Obat obat = getObatById(idObat);
-   while (obat == null) {
+  while (obat == null) {
     System.out.print("obat tidak ada! ingin kembali? (y/n) : ");
+    scan.nextLine(); // solusi sementara agar pengisian nama terbaca
     String answer = scan.nextLine();
     if (answer.equalsIgnoreCase("y")){
       return;
@@ -151,19 +158,15 @@ public void pembelianObat(Boolean buyAgain, String jenisPembayaran, String pembe
     System.out.print("Silahkan ulangi masukan id obat!\n");
     System.out.print("id obat : ");
     idObat = scan.nextInt();
-    scan.nextLine();
     obat = getObatById(idObat);
     }
   while(obat.getStockObat() <= 0){
     System.out.printf("Stock obat habis, mohon pilih obat yang lain!");
     System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
     idObat = scan.nextInt();
-    laporan.setIdObat(idObat);
     obat = getObatById(idObat);
   }
-  laporan.setNamaObat(obat.getNamaObat());
-
-  laporan.setJenisPembayaran(jenisPembayaran);
+  
   System.out.printf("Silahkan masukan total item : ");
   int totalItem = scan.nextInt();
   while (totalItem > obat.getStockObat() || totalItem < 0) {
@@ -171,35 +174,46 @@ public void pembelianObat(Boolean buyAgain, String jenisPembayaran, String pembe
     System.out.printf("Silahkan masukan total item : ");
     totalItem = scan.nextInt();
   }
-  laporan.setTotalItem(scan.nextInt());
-  obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
+  while(obat.getStockObat() <= 0){
+    System.out.printf("Stock obat habis, mohon pilih obat yang lain!");
+    System.out.printf("%nSilahkan pilih id obat yang ingin di beli : ");
+    idObat = scan.nextInt();
+    obat = getObatById(idObat);
+  }
   scan.nextLine(); // solusi sementara agar pengisian nama terbaca
 
+  PenjualanObat laporan = new PenjualanObat(strukId);
+  Struk strukPenjualanObat = getStrukById(strukId); //ini khusus struk untuk dicetak
+  laporan.setIdObat(idObat);
+  laporan.setNamaObat(obat.getNamaObat());
+  laporan.setJenisPembayaran(jenisPembayaran);
+  laporan.setTotalItem(totalItem);
+  obat.setStockObat(obat.getStockObat()-laporan.getTotalItem()); // pengurangan stok obat
+
+  //penentuan harga
   laporan.setPembeli(pembeli);
   if(!laporan.getPembeli().equals("anonymous")){
     laporan.setTotalHarga(laporan.getTotalItem()*(obat.getHargaMember()));
   } else {
     laporan.setTotalHarga(laporan.getTotalItem()*obat.getHarga());
   }
-  
-  Saldo.setPendapatan(laporan.getTotalHarga());
+
+  Saldo.tambahPendapatan(laporan.getTotalHarga());
   strukPenjualanObat.tambahPembelian(laporan.getNamaObat(), laporan.getTotalItem(), obat.getHarga(), laporan.getTotalHarga()/laporan.getTotalItem());
   this.penjualanObats.add(laporan);
   this.strukPenjualanObats.add(strukPenjualanObat);
 
-
   System.out.printf("ada tambahan lagi? y/n: ");
 }
 public void pembuatanMemberBaru(){
-  scan.nextLine();
   System.out.printf("%nSilahkan masukan data ! ");
   System.out.printf("%nnama : ");
   String nama = scan.nextLine();
   System.out.printf("alamat : ");
   String alamat = scan.nextLine();
-  System.out.printf("jenisKelamin : ");
+  System.out.printf("jenis kelamin : ");
   String jenisKelamin = scan.nextLine();
-  System.out.printf("nomorTelpon : ");
+  System.out.printf("nomor telpon : ");
   String nomorTelpon = scan.nextLine();
   System.out.printf("umur : ");
   String umur = scan.nextLine();
@@ -248,8 +262,8 @@ public void updateInformasiObat(){
   obat.setExpiredYear(scan.nextInt());
   System.out.printf("Harga : ");
   obat.setHarga(scan.nextInt()*12/10);
+  scan.nextLine(); // solusi sementara agar pengisian nama
   System.out.printf("%nUpdate telah berhasil !%n");
-  this.obats.set(0, obat);
   
 }
 public void pemesananObat(){
@@ -258,17 +272,14 @@ public void pemesananObat(){
   System.out.printf("%nsilahkan masukan data laporan : ");
   System.out.printf("%nnama obat : ");
   String namaObat = scan.nextLine();
-  obat.setNamaObat(namaObat);
   System.out.printf("kode obat : ");
   String kodeObat = scan.nextLine();
-  obat.setKodeObat(kodeObat);
   System.out.printf("stok : ");
   int stockObat = scan.nextInt();
   while(stockObat < 0){
     System.out.println("Masukan stok yang valid agar tidak menyebabkan masalah yang fatal");
     stockObat = scan.nextInt();
   }
-  obat.setStockObat(stockObat);
   scan.nextLine(); // solusi sementara agar pengisian nama
   System.out.printf("Supplier : ");
   String supplier = scan.nextLine();
@@ -282,17 +293,22 @@ public void pemesananObat(){
     System.out.println("harga tidak valid, ulangi !");
     harga = scan.nextInt();
   }
+  scan.nextLine(); // solusi sementara agar pengisian nama
+
+  obat.setNamaObat(namaObat);
+  obat.setKodeObat(kodeObat);
+  obat.setStockObat(stockObat);
   obat.setHarga(harga*12/10);
+
   restockObat.setNamaObat(namaObat);
   restockObat.setHarga(harga);
   restockObat.setKodeObat(kodeObat);
   restockObat.setStockObat(stockObat);
   restockObat.setTotalHarga(restockObat.getHarga()*restockObat.getStockObat());
 
-  Saldo.setPengeluaran(restockObat.getTotalHarga());
+  Saldo.tambahPengeluaran(restockObat.getTotalHarga());
   this.obats.add(obat);
   this.restockObats.add(restockObat);
-  
 }
 
 //section Laporan
@@ -319,10 +335,10 @@ public void showLaporanPemesanan(){
   }
 }  
 public void showSaldo(){
-  System.out.printf("Saldo saat ini %n");
+  System.out.printf("%nSaldo saat ini %n");
   System.out.print("Pengeluaran : ");
   System.out.println(Saldo.getPengeluaran());
-  System.out.print("Pendapatan : ");
+  System.out.print("Pemasukan : ");
   System.out.println(Saldo.getPendapatan());
   System.out.print("Laba : ");
   System.out.println(Saldo.getLaba());
@@ -441,8 +457,8 @@ public void loadData(String x) throws IOException{
         
     } else if(x.equals("saldo")){
         while(scanFile.hasNext()){
-            Saldo.setPengeluaran(Integer.valueOf(scanFile.next().trim()));
-            Saldo.setPendapatan(Integer.valueOf(scanFile.next().trim()));
+            Saldo.tambahPengeluaran(Integer.valueOf(scanFile.next().trim()));
+            Saldo.tambahPendapatan(Integer.valueOf(scanFile.next().trim()));
             if(scanFile.nextLine().trim().isEmpty()){
                 break;
             }
