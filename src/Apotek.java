@@ -300,6 +300,7 @@ public void pemesananObat(){
   obat.setStockObat(stockObat);
   obat.setHarga(harga*12/10);
 
+  restockObat.setSupplier(supplier);
   restockObat.setNamaObat(namaObat);
   restockObat.setHarga(harga);
   restockObat.setKodeObat(kodeObat);

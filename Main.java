@@ -39,7 +39,6 @@ public static void main(String[] args) throws Exception{
         
         System.out.printf("%ncontinue ? : ");
         isContinue = scan.next();
-        
         //handling salah input
         while (!(isContinue.equalsIgnoreCase("y") || isContinue.equalsIgnoreCase("n"))) {
             System.out.println("wrong input");

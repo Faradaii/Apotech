@@ -12,7 +12,6 @@ public class PenjualanObat extends Laporan {
         this.setDate();
     }
     public PenjualanObat(String id){
-        jumlahLaporan++;
         this.setId(id);
         this.setDate();
     }
